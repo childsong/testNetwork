@@ -24,7 +24,7 @@ public class Client {
     private PSGrpc.PSBlockingStub blockingStub=null;
 
     public Client(String host,int port){
-        channel=ManagedChannelBuilder.forAddress(host,port).build();
+        channel=ManagedChannelBuilder.forAddress(host,port).usePlaintext(true).build();
         blockingStub=PSGrpc.newBlockingStub(channel);
     }
 
