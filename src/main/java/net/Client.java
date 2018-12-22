@@ -11,6 +11,8 @@ import net.PSGrpc;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Inet4Address;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * @program: orgtestNetWork
@@ -21,17 +23,21 @@ import java.net.Inet4Address;
 @Data
 public class Client {
     private ManagedChannel channel=null;
-    private PSGrpc.PSBlockingStub blockingStub=null;
+    private PSGrpc.PSFutureStub featureStub=null;
 
     public Client(String host,int port){
         channel=ManagedChannelBuilder.forAddress(host,port).usePlaintext(true).build();
-        blockingStub=PSGrpc.newBlockingStub(channel);
+        featureStub=PSGrpc.newFutureStub(channel);
     }
 
-    public void sayHello() throws IOException {
+    public void sayHello() throws IOException,ExecutionException,InterruptedException {
         HelloRequest.Builder req=HelloRequest.newBuilder();
         req.setName(Inet4Address.getLocalHost().getHostName());
-        HelloReply reply=blockingStub.sayHello(req.build());
+        Future<HelloReply> reply=featureStub.sayHello(req.build());
+        while(!reply.isDone()){
+            Thread.sleep(10);
+        }
+        System.out.println(reply.get().getMessage());
     }
 
 

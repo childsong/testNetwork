@@ -23,12 +23,12 @@ public class PServer implements PSGrpc.PS {
     private Server server;
 
     public PServer(int port){
-        this.server=ServerBuilder.forPort(8889).addService(PSGrpc.bindService(this)).build();
+        this.server=ServerBuilder.forPort(port).addService(PSGrpc.bindService(this)).build();
     }
 
     public void start()throws IOException,InterruptedException{
         this.server.start();
-
+        System.out.println("server start");
         this.server.awaitTermination();
         Runtime.getRuntime().addShutdownHook(new Thread(){
             @Override
